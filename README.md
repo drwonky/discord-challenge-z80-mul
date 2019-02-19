@@ -41,9 +41,11 @@ the discussion of the z80 JS emulator where he noted the z80 doesn't have multip
  Bonus 2: Implement an interpreter which runs the following machine code
  (shown in NASM/Intel syntax) and prints out the result:
 
+<pre>
  31 d2                	xor    dx,dx			0x30, d=0, s=1 ram, dx, dx
  b8 cc ed             	mov    ax,0xedcc		0xb8+r ax reg imm16/32 (s=1 implied)
  69 d0 78 56          	imul   dx,ax,0x5678		0x68, d=0, s=1 ram, dx, ax, imm16/32
+</pre>
 
  The input for Bonus 2 will be the following HEX string:
 
