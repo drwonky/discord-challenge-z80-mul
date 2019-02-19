@@ -1,5 +1,11 @@
 # discord-challenge-z80-mul
 3 challenges to multiply numbers without mul operator, resulting in 3 opcode virtual machine for i286
+
+This isn't a One Lone Coder Challenge, it's a challenge I imagined in the same spirit as OLC.
+
+I came up with this challenge while watching Matt Godbolt discuss his SEGA Master System emulator, specifically
+the discussion of the z80 JS emulator where he noted the z80 doesn't have multiply or divide instructions.
+
  Objective:
 
  The Z80 processor does not contain multiply or divide instructions, how did
