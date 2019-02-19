@@ -34,7 +34,7 @@ using namespace std;
  *
  * Output: 6260060
  *
- * Bonus 1: Handle signed numbers, the cpu processor uses two's compliment to
+ * Bonus 1: Handle signed numbers, the X86 processor uses two's compliment to
  * represent signed numbers, ref:
  * https://en.wikipedia.org/wiki/Two%27s_complement
  *
@@ -70,6 +70,8 @@ struct x86 {
 	enum { eax, ecx, edx, ebx, esp, ebp, esi, edi };
 	enum { ri, osb, fsb, ram };
 	enum { b8, b16 };
+
+	enum { xor_rr = 0xC, mov_r_imm16 = 0x17, imul_rr_imm16 = 0x1A };
 
 	struct po {					// primary opcode
 		union {
@@ -176,7 +178,7 @@ int main_cpu() {
 				cpu.b1 = byte;
 				cout << "opr "<<std::hex<<(int)cpu.opcode.opr<<" op "<<(int)cpu.opcode.op<<endl;
 				switch(cpu.opcode.opr) {
-					case 0x17:
+					case x86::mov_r_imm16:
 						cout << "0x17"<<endl;
 						cpu.dest = cpu.opcode.r;
 						cpu.opcode.s = 1;
@@ -185,16 +187,15 @@ int main_cpu() {
 						break;
 					default:
 						switch(cpu.opcode.op) {
-							case 0xC:
+							case x86::xor_rr:
 								cout << "0xC"<<endl;
 								cpu.expect = 1;
 								state = modrm;
 								break;
-							case 0x1A:
+							case x86::imul_rr_imm16:
 								cout << "0x1A"<<endl;
 								cpu.expect = 3;
 								cpu.tertiary = true;
-								cpu.regs[x86::dx]=0;
 								state = modrm;
 								break;
 						}
@@ -251,10 +252,10 @@ int main_cpu() {
 		if (uop == exec) {
 			cout << "Executing..."<<endl;
 			switch (cpu.opcode.op){
-				case 0xC:
+				case x86::xor_rr:
 					cpu.regs[cpu.dest] = cpu.regs[cpu.dest] ^ cpu.regs[cpu.src];
 					break;
-				case 0x1A: {
+				case x86::imul_rr_imm16: {
 					bool sign = (cpu.regs[cpu.dest] & 0x8000) ^ (cpu.regs[cpu.src] & 0x8000);	// test if either input value is negative, both negative, or not negative and set sign of result appropriately
 
 					if (cpu.regs[cpu.dest] & 0x8000) cpu.regs[cpu.dest] = ~cpu.regs[cpu.dest] + 1;					// convert from two's complement to unsigned
